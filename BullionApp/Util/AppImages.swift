@@ -10,4 +10,6 @@ struct AppImages {
     static let calendar = "calendar"
     static let link = "link"
     static let eye = "eye"
+    static let banner = "banner"
+    static let profilePlaceholder = "profilePlaceholder"
 }

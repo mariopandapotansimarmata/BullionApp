@@ -21,7 +21,11 @@ struct AppColors {
     static let white = Color(.white)
     static let lightGray = Color("lightGray1")
     static let darkGray = Color("darkGray1")
+    static let darkGray2 = Color("darkGray2")
     
     static let buttonBlue = Color("buttonBlue")
+    
+    static let bannerIndicatorBorder =  Color("bannerIndicatorBorder")
+    static let bannerIndicator =  Color("bannerIndicator")
     
 }

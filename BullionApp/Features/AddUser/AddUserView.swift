@@ -142,12 +142,24 @@ struct AddUserView: View {
                 Image(AppImages.bullionLogo)
             }
             
-            ToolbarItem(placement: .topBarLeading) {
-                Button{
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .foregroundStyle(.white)
+            if #available(iOS 26.0, *) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button{
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(.white)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button{
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(.white)
+                    }
                 }
             }
         }
@@ -162,7 +174,6 @@ struct AddUserView: View {
                 startPoint: .topLeading, endPoint: .bottomTrailing
             )
         )
-        
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden()
     }
