@@ -1,0 +1,70 @@
+//
+//  SignInView.swift
+//  BullionApp
+//
+//  Created by Mario Pandapotan Simarmata on 20/12/25.
+//
+
+import SwiftUI
+
+struct SignInView: View {
+    
+    @StateObject private var viewModel = SignInViewModel()
+    
+    var body: some View {
+        ZStack {
+            VStack {
+                Image(AppImages.bullionLogo)
+                    .frame(maxHeight: .infinity)
+                
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        CustomTextfieldView(label: "Email Address", text: $viewModel.email,type: .normal)
+                            .labelWeight(.medium)
+
+                        CustomTextfieldView(label: "Password", text: $viewModel.password,type: .secure)
+                            .labelWeight(.medium)
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        CustomButton(title: "Sign In") {}
+                      
+                        NavigationLink(destination: AddUserView()){
+                            Text("m cek e")
+                        }
+//                        CustomButton(title: "Add new Users") {}
+                        
+                    }
+                }
+                .padding(.vertical, 32)
+                .padding(.horizontal, 24)
+                
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 390, alignment: .top)
+                .background(AppColors.greyBackground)
+                .cornerRadius(24)
+            }
+            .offset(x:0, y:0)
+        }
+        .frame(maxWidth: .infinity,maxHeight: .infinity)
+        .background(
+            LinearGradient(
+                stops: [
+                    .init(color: AppColors.background1, location: 0),
+                    .init(color: AppColors.background2, location: 0.37),
+                    .init(color: AppColors.background3, location: 0.86)
+                ],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+        )
+        .ignoresSafeArea()
+    }
+}
+
+#Preview {
+    NavigationStack{
+        SignInView()
+    }
+}
