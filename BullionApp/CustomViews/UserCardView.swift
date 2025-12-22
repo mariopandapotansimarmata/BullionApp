@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct UserCardView: View {
+    
+    var user: UserProfile
+    
     var body: some View {
         HStack {
             HStack {
                 Image(AppImages.profilePlaceholder)
                 
                 VStack(alignment: .leading) {
-                    Text("Ghalyatama Ikram Fauzi")
+                    Text(user.name)
                         .font(.custom(AppFonts.InterMedium, size: 12))
-                    Text(verbatim: "ghalyatama@bullion.com")
+                    Text(verbatim: user.email)
                         .font(.custom(AppFonts.InterMedium, size: 10))
                         .foregroundStyle(AppColors.darkGray2)
                 }
@@ -24,7 +27,7 @@ struct UserCardView: View {
             
             Spacer()
             
-            Text("May 14,1998")
+            Text((user.dateOfBirth?.toString())!)
                 .font(.custom(AppFonts.InterMedium, size: 10))
                 .foregroundStyle(AppColors.darkGray2)
         }

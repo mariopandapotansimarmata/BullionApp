@@ -10,12 +10,11 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject private var router: AppRouter
-    
+    @StateObject var viewModel = HomeViewModel()
+
     var numOfBanner: Int = 3
-    @State var selectedBanner: Int? = 0
     let bannerWidth: CGFloat = 360
     let bannerHeight: CGFloat = 180
-    @State var isShowDetailAccount = false
     
     var body: some View {
         ZStack {
@@ -36,7 +35,7 @@ struct HomeView: View {
                     }
                     .scrollIndicators(.hidden)
                     .scrollTargetBehavior(.viewAligned)
-                    .scrollPosition(id: $selectedBanner)
+                    .scrollPosition(id: $viewModel.selectedBanner)
                     .frame(maxWidth: .infinity)
                     
                     HStack {
@@ -45,14 +44,14 @@ struct HomeView: View {
                                 .foregroundStyle(
                                     AppColors.bannerIndicator
                                         .opacity(
-                                            selectedBanner == num ? 1 : 0.5
+                                            viewModel.selectedBanner == num ? 1 : 0.5
                                         )
                                 )
                                 .frame(width: 8, height: 8)
                                 .onTapGesture {
                                     withAnimation {
                                         proxy.scrollTo(num, anchor: .center)
-                                        selectedBanner = num
+                                        viewModel.selectedBanner = num
                                     }
                                 }
                         }
@@ -72,20 +71,27 @@ struct HomeView: View {
                                 startPoint: .bottomLeading, endPoint: .topTrailing)
                         )
                     
-                    VStack {
-                        ScrollView {
-                            ForEach(0..<10, id: \.self) { _ in
-                                UserCardView()
-                                    .onTapGesture {
-                                        isShowDetailAccount.toggle()
-                                    }
-                            }
-                            .padding(.bottom)
+                    if viewModel.isLoading {
+                        VStack {
+                            ProgressView("Loading..")
                         }
-                        .scrollIndicators(.hidden)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    } else {
+                        VStack {
+                            ScrollView {
+                                ForEach(viewModel.listData) { user in
+                                    UserCardView(user: user)
+                                        .onTapGesture {
+                                            viewModel.selectedUser = user
+                                            viewModel.isShowDetailAccount.toggle()
+                                        }
+                                }
+                                .padding(.bottom)
+                            }
+                            .scrollIndicators(.hidden)
+                        }
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }
-                    .frame(maxHeight: .infinity, alignment: .top)
-                    
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 16) {
@@ -104,15 +110,20 @@ struct HomeView: View {
             .padding(.top)
             .frame(maxHeight: .infinity, alignment: .top)
             
-            if isShowDetailAccount {
+            if viewModel.isShowDetailAccount {
                 Color(.black)
                     .frame(maxWidth: .infinity)
                     .frame(maxHeight: .infinity)
                     .opacity(0.4)
                     .onTapGesture {
-                        isShowDetailAccount.toggle()
+                        viewModel.isShowDetailAccount.toggle()
                     }
-                DetailCardView()
+                DetailCardView(isShowDetailAccount: $viewModel.isShowDetailAccount, user: $viewModel.selectedUser)
+            }
+        }
+        .onAppear {
+            Task {
+                await viewModel.fetchUsers()
             }
         }
         .toolbar {

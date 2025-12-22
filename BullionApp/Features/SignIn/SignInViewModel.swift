@@ -10,8 +10,8 @@ import Foundation
 
 class SignInViewModel: ObservableObject {
     
-    @Published var email: String = "mario@email.com"
-    @Published var password: String = "97a7cc1e1e6fa238a5df6bf91cb85bb1b277b406a35191af84739d939f67acf1"
+    @Published var email: String = "admin@email.com"
+    @Published var password: String = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
     
     @Published var isShowError = false
     @Published var errorMessage = ""

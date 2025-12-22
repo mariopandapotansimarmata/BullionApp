@@ -126,7 +126,7 @@ final class NetworkService {
             throw NetworkError.unauthorized
         default:
             if !data.isEmpty {
-                if let apiErr = try? JSONDecoder().decode(ApiErrorResponse.self, from: data) {
+                if let apiErr = try? JSONDecoder.apiDecoder.decode(ApiErrorResponse.self, from: data) {
                     let message = apiErr.message
                     throw NetworkError.custom(message)
                 }
@@ -137,10 +137,7 @@ final class NetworkService {
         guard !data.isEmpty else { throw NetworkError.noData }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            
-            return try decoder.decode(T.self, from: data)
+            return try JSONDecoder.apiDecoder.decode(T.self, from: data)
         } catch {
             print("Decoding error: \(error)")
             throw NetworkError.decodingError

@@ -10,6 +10,8 @@ import SwiftUI
 struct DetailCardView: View {
     
     @EnvironmentObject private var router: AppRouter
+    @Binding var isShowDetailAccount: Bool
+    @Binding var user: UserProfile?
     
     var body: some View {
         VStack(alignment: .leading ,spacing: 10) {
@@ -18,6 +20,9 @@ struct DetailCardView: View {
                 Image(systemName: "xmark")
                     .resizable()
                     .frame(width: 8, height: 8)
+                    .onTapGesture {
+                        isShowDetailAccount.toggle()
+                    }
             }
             
             Image(AppImages.profilePlaceholder)
@@ -25,9 +30,9 @@ struct DetailCardView: View {
                 .frame(width: 64, height: 64)
             
             VStack(alignment: .leading) {
-                Text("Ghalyatama Ikram Fauzi")
+                Text(user?.name ?? "")
                     .font(.custom(AppFonts.InterMedium, size: 12))
-                Text(verbatim: "ghalyatama@bullion.com")
+                Text(verbatim: user?.email ?? "")
                     .font(.custom(AppFonts.InterMedium, size: 10))
                     .foregroundStyle(AppColors.darkGray2)
             }
@@ -36,28 +41,28 @@ struct DetailCardView: View {
                 Text(verbatim: "Gender")
                     .font(.custom(AppFonts.InterMedium, size: 10))
                     .foregroundStyle(AppColors.darkGray2)
-                Text("MALE")
+                Text(user?.gender.rawValue.capitalized ?? "-")
                     .font(.custom(AppFonts.InterMedium, size: 12))
             }
             VStack(alignment: .leading) {
                 Text(verbatim: "Phone Number")
                     .font(.custom(AppFonts.InterMedium, size: 10))
                     .foregroundStyle(AppColors.darkGray2)
-                Text("082182822828")
+                Text(user?.phone ?? "")
                     .font(.custom(AppFonts.InterMedium, size: 12))
             }
              VStack(alignment: .leading) {
                 Text(verbatim: "Date of Birth")
                     .font(.custom(AppFonts.InterMedium, size: 10))
                     .foregroundStyle(AppColors.darkGray2)
-                Text("14 May 1998")
+                 Text(user?.dateOfBirth?.toString() ?? "-")
                     .font(.custom(AppFonts.InterMedium, size: 12))
             }
              VStack(alignment: .leading) {
                 Text(verbatim: "Address")
                     .font(.custom(AppFonts.InterMedium, size: 10))
                     .foregroundStyle(AppColors.darkGray2)
-                Text("JL Moh Hatta Gg Bunga Emas No.1002 Tanjung Senang, Bandar Lampung")
+                Text(user?.address ?? "")
                     .font(.custom(AppFonts.InterMedium, size: 12))
             }
             
@@ -72,3 +77,4 @@ struct DetailCardView: View {
         .padding(28)
     }
 }
+
