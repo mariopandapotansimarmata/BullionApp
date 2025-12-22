@@ -62,4 +62,8 @@ class AppRouter: ObservableObject {
             UpdateUserView()
         }
     }
+    
+    func reset() {
+           path.removeLast()
+       }
 }

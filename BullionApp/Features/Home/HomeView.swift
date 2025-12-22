@@ -134,6 +134,8 @@ struct HomeView: View {
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button{
+                        UserDefaults.standard.removeObject(forKey: "auth_token")
+                        UserDefaults.standard.synchronize()
                         router.pop()
                     } label: {
                         Text("Logout")
@@ -145,7 +147,10 @@ struct HomeView: View {
             } else {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button{
+                        UserDefaults.standard.removeObject(forKey: "auth_token")
+                        UserDefaults.standard.synchronize()
                         router.pop()
+
                     } label: {
                         Text("Logout")
                             .font(.custom(AppFonts.InterSemiBold, size: 12))

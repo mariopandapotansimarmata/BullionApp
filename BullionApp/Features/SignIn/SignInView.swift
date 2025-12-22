@@ -31,7 +31,13 @@ struct SignInView: View {
                     
                     VStack(alignment: .leading, spacing: 16) {
                         CustomButton(title: "Sign In") {
-                            router.push(.home)
+                            Task {
+                                let success = await viewModel.signIn()
+                                if success {
+                                    router.push(.home)
+
+                                }
+                            }
                         }
                         CustomButton(title: "Add new Users") {}
                         
@@ -39,13 +45,23 @@ struct SignInView: View {
                 }
                 .padding(.vertical, 32)
                 .padding(.horizontal, 24)
-                
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(height: 390, alignment: .top)
                 .background(AppColors.greyBackground)
                 .cornerRadius(24)
             }
-            .offset(x:0, y:0)
+            
+            if viewModel.isLoading {
+                Color(.black)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .opacity(0.4)
+                
+                ProgressView("Signing In...")
+                    .frame(width: 200, height: 240)
+                    .background(.white)
+                    .cornerRadius(16)
+            }
         }
         .frame(maxWidth: .infinity,maxHeight: .infinity)
         .background(
@@ -59,6 +75,14 @@ struct SignInView: View {
             )
         )
         .ignoresSafeArea()
+        .alert("Sign In Failed", isPresented: $viewModel.isShowError) {
+            Button("Try Again", role: .cancel) {
+                viewModel.isShowError = false
+            }
+            .background(Color(AppColors.greyBackground))
+        } message: {
+            Text("Email or Password is incorrect")
+        }
     }
 }
 

@@ -9,12 +9,9 @@ import SwiftUI
 
 struct AppRouterView: View {
     
-    @StateObject private var coordinator: AppRouter = AppRouter()
-    @State private var tokenLoaded = false
-    @State private var hasToken = false
-    @State private var hasCompletedOnboarding = false
-
-
+    @StateObject private var coordinator = AppRouter()
+    @StateObject private var authManager = AuthManager()
+    
     private var previewPage: Page?
     
     init( previewPage: Page? = nil) {
@@ -24,11 +21,18 @@ struct AppRouterView: View {
     var body: some View {
         NavigationStack(path: $coordinator.path) {
             coordinator.build(page: previewPage ?? .signIn)
-                    .navigationDestination(for: Page.self) { page in
-                        coordinator.build(page: page)
-                    }
+                .navigationDestination(for: Page.self) { page in
+                    coordinator.build(page: page)
+                }
         }
         .environmentObject(coordinator)
-
+        .onAppear {
+            if authManager.isAuthenticated {
+                coordinator.push(.home)
+            }
+        }
+        .onChange(of: authManager.isAuthenticated) { _,_ in
+            coordinator.reset()
+        }
     }
 }
