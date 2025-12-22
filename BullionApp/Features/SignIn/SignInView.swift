@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignInView: View {
     
+    @EnvironmentObject private var router: AppRouter
     @StateObject private var viewModel = SignInViewModel()
     
     var body: some View {
@@ -29,12 +30,10 @@ struct SignInView: View {
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 16) {
-                        CustomButton(title: "Sign In") {}
-                      
-                        NavigationLink(destination: AddUserView()){
-                            Text("m cek e")
+                        CustomButton(title: "Sign In") {
+                            router.push(.home)
                         }
-//                        CustomButton(title: "Add new Users") {}
+                        CustomButton(title: "Add new Users") {}
                         
                     }
                 }
@@ -64,7 +63,6 @@ struct SignInView: View {
 }
 
 #Preview {
-    NavigationStack{
-        SignInView()
-    }
+       AppRouterView()
+    
 }

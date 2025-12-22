@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct DetailCardView: View {
+    
+    @EnvironmentObject private var router: AppRouter
+    
     var body: some View {
         VStack(alignment: .leading ,spacing: 10) {
             HStack {
@@ -59,7 +62,7 @@ struct DetailCardView: View {
             }
             
             CustomButton(title: "Edit User") {
-                
+                router.push(.addUser)
             }
         }
         .padding()

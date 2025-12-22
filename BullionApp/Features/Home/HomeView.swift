@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var router: AppRouter
     
     var numOfBanner: Int = 3
     @State var selectedBanner: Int? = 0
@@ -60,7 +60,6 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity)
                 
-                
                 VStack(alignment: .leading) {
                     Text("List Users")
                         .font(.custom(AppFonts.InterRegular, size: 14))
@@ -90,7 +89,9 @@ struct HomeView: View {
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 16) {
-                        CustomButton(title: "Add new Users") {}
+                        CustomButton(title: "Add new Users") {
+                            router.push(.addUser)
+                        }
                     }
                 }
                 .padding(.vertical, 32)
@@ -133,7 +134,7 @@ struct HomeView: View {
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button{
-                        dismiss()
+                        router.pop()
                     } label: {
                         Text("Logout")
                             .font(.custom(AppFonts.InterSemiBold, size: 12))
@@ -144,7 +145,7 @@ struct HomeView: View {
             } else {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button{
-                        dismiss()
+                        router.pop()
                     } label: {
                         Text("Logout")
                             .font(.custom(AppFonts.InterSemiBold, size: 12))
@@ -166,11 +167,10 @@ struct HomeView: View {
         )
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden()
+        .interactiveDismissDisabled()
     }
 }
 
 #Preview {
-    NavigationStack {
-        HomeView()
-    }
+    AppRouterView()
 }

@@ -11,7 +11,11 @@ import SwiftUI
 struct BullionAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRouterView()
         }
     }
+}
+
+#Preview {
+    AppRouterView()
 }
