@@ -20,11 +20,25 @@ struct SignInView: View {
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 16) {
-                        CustomTextfieldView(label: "Email Address", text: $viewModel.email,type: .normal)
+                        CustomTextfieldView(label: "Email Address", text: $viewModel.email,type: .normal, isValidForm: $viewModel.isValidEmail)
                             .labelWeight(.medium)
+                            .onChange(of: viewModel.email) { oldValue, newValue in
+                                if newValue.isEmpty {
+                                     viewModel.isValidEmail = false
+                                 } else {
+                                     viewModel.isValidEmail = Helper.isValidEmail(newValue)
+                                 }
+                            }
 
-                        CustomTextfieldView(label: "Password", text: $viewModel.password,type: .secure)
+                        CustomTextfieldView(label: "Password", text: $viewModel.password,type: .secure, isValidForm: $viewModel.isValidPassword)
                             .labelWeight(.medium)
+                            .onChange(of: viewModel.password) { oldValue, newValue in
+                                if newValue.count < 8 {
+                                     viewModel.isValidPassword = false
+                                 } else {
+                                     viewModel.isValidPassword = true
+                                 }
+                            }
                     }
                     
                     Spacer()
@@ -39,7 +53,7 @@ struct SignInView: View {
                                 }
                             }
                         }
-                        CustomButton(title: "Add new Users") {}
+                        .disabled(!(viewModel.isValidEmail && viewModel.isValidPassword))
                         
                     }
                 }

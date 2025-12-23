@@ -10,8 +10,8 @@ import PhotosUI
 
 struct UpdateUserView: View {
     @Environment(\.dismiss) private var dismiss
-
-    @StateObject private var viewModel = AddUserViewModel()
+    
+    @StateObject private var viewModel = UpdateUserViewModel()
     @State private var isShowDatePicker: Bool = false
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
@@ -24,29 +24,37 @@ struct UpdateUserView: View {
                 VStack(alignment: .leading) {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
-                            CustomTextfieldView(label: "Name", text: $viewModel.name,type: .normal)
+                            CustomTextfieldView(label: "Name", text: $viewModel.name,type: .normal, isValidForm: $viewModel.isNameValid)
                             
                             CustomSelectBoxView(gender: $viewModel.gender)
                             
                             CustomTextfieldView(
                                 label: "Date of Birth",
                                 text: $viewModel.dateOfBirthText,
-                                
+                                isValidForm: $viewModel.isDateBirthValid,
                                 type: .normal,
-                                isDisableField: true) {
-                                    Image(AppImages.calendar)
-                                        .onTapGesture {
-                                            isShowDatePicker.toggle()
-                                        }
-                                }
+                                isDisableField: true,
+                                
+                            ) {
+                                Image(AppImages.calendar)
+                                    .onTapGesture {
+                                        isShowDatePicker.toggle()
+                                    }
+                            }
                             
-                            CustomTextfieldView(label: "Email Address", text: $viewModel.emailAddress,type: .normal)
+                            CustomTextfieldView(label: "Email Address", text: $viewModel.emailAddress,type: .normal,                                 isValidForm: $viewModel.isEmailValid,
+                            )
                             
-                            CustomTextfieldView(label: "Phone Number", text: $viewModel.phoneNumber,type: .normal)
+                            CustomTextfieldView(label: "Phone Number", text: $viewModel.phoneNumber,type: .normal,                                 isValidForm: $viewModel.isPhoneValid,
+                            )
+                            
+                            CustomTextfieldView(label: "Adress", text: $viewModel.address,type: .normal,                                 isValidForm: $viewModel.isPhoneValid,
+                            )
                             
                             CustomTextfieldView(
                                 label: "Photo Picture",
-                                text: $viewModel.photoProfile,
+                                text: .constant("Photo"),
+                                isValidForm: $viewModel.isPhotoValid,
                                 type: .normal,
                                 isDisableField: true
                             ) {
@@ -57,15 +65,18 @@ struct UpdateUserView: View {
                                     Image(AppImages.link)
                                 }
                             }
-                            .onChange(of: selectedItem) {
-                                guard let newItem = selectedItem else { return }
-                                print(selectedItem!)
+                            .onChange(of: selectedItem) { oldItem, newItem in
+                                guard let newItem else { return }
                                 
                                 Task {
-                                    if let url = try? await newItem.loadTransferable(type: URL.self) {
-                                        viewModel.photoProfile = url.lastPathComponent
+                                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                                       let image = UIImage(data: data) {
+                                        
+                                        viewModel.photoProfile = image
+                                        
+                                        viewModel.isPhotoValid = true
                                     } else {
-                                        viewModel.photoProfile = "Photo selected"
+                                        viewModel.isPhotoValid = false
                                     }
                                 }
                             }

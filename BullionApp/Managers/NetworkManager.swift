@@ -191,4 +191,54 @@ final class NetworkService {
     ) async throws -> T {
         try await request(path, method: "PATCH", body: body, query: query, headers: headers, responseType: responseType)
     }
+    
+    func uploadMultipart<T: Decodable>(
+        _ path: String,
+        parts: [MultipartFormData],
+        responseType: T.Type
+    ) async throws -> T {
+        let url = baseURL.appendingPathComponent(path)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        let boundary = "Boundary-\(UUID().uuidString)"
+        request.setValue(
+            "multipart/form-data; boundary=\(boundary)",
+            forHTTPHeaderField: "Content-Type"
+        )
+
+        request.httpBody = createMultipartBody(parts: parts, boundary: boundary)
+
+        let (data, _) = try await session.data(for: request)
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    private func createMultipartBody(
+        parts: [MultipartFormData],
+        boundary: String
+    ) -> Data {
+        var body = Data()
+
+        for part in parts {
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"\(part.name)\"")
+
+            if let filename = part.filename {
+                body.append("; filename=\"\(filename)\"")
+            }
+
+            body.append("\r\n")
+
+            if let mimeType = part.mimeType {
+                body.append("Content-Type: \(mimeType)\r\n")
+            }
+
+            body.append("\r\n")
+            body.append(part.data)
+            body.append("\r\n")
+        }
+
+        body.append("--\(boundary)--\r\n")
+        return body
+    }
 }

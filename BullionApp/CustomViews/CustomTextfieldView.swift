@@ -17,6 +17,7 @@ struct CustomTextfieldView<Suffix: View>: View {
     var label: String
     var description: String = ""
     @Binding var text: String
+    @Binding var isValidForm: Bool
 
     var type: TextFieldType = .normal
     var labelWeight: String = AppFonts.RobotoRegular
@@ -73,7 +74,8 @@ struct CustomTextfieldView<Suffix: View>: View {
             .cornerRadius(100)
             .overlay {
                 RoundedRectangle(cornerRadius: 100)
-                    .stroke(AppColors.lightGray, lineWidth: 1)
+                    .stroke(
+                        isValidForm ? AppColors.lightGray : .red, lineWidth: 1)
             }
         }
     }
@@ -104,7 +106,8 @@ extension CustomTextfieldView where Suffix == EmptyView {
         text: Binding<String>,
         type: TextFieldType = .normal,
         labelWeight: String = AppFonts.RobotoRegular,
-        isDisableField: Bool = false
+        isDisableField: Bool = false,
+        isValidForm: Binding<Bool>
     ) {
         self.label = label
         self.description = description
@@ -113,6 +116,6 @@ extension CustomTextfieldView where Suffix == EmptyView {
         self.labelWeight = labelWeight
         self.isDisableField = isDisableField
         self.suffixView = { EmptyView() }
-//        self.action = nil
+        self._isValidForm = isValidForm
     }
 }

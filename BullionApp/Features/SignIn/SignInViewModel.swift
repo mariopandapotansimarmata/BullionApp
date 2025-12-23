@@ -12,6 +12,8 @@ class SignInViewModel: ObservableObject {
     
     @Published var email: String = "admin@email.com"
     @Published var password: String = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
+    @Published var isValidEmail: Bool = true
+    @Published var isValidPassword: Bool = true
     
     @Published var isShowError = false
     @Published var errorMessage = ""
